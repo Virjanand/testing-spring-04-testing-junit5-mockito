@@ -23,6 +23,15 @@ class SpecialitySDJpaServiceTest {
     SpecialitySDJpaService specialitySDJpaService;
 
     @Test
+    void testDeleteByOjbect() {
+        Speciality speciality = new Speciality();
+
+        specialitySDJpaService.delete(speciality);
+
+        verify(specialtyRepository).delete(any(Speciality.class));
+    }
+
+    @Test
     void findByIdTest() {
         Speciality speciality = new Speciality();
 
