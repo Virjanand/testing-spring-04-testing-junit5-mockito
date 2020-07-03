@@ -26,27 +26,18 @@ class SpecialitySDJpaServiceTest {
 
     @Test
     void testDeleteByOjbect() {
+        //given
         Speciality speciality = new Speciality();
 
+        //when
         specialitySDJpaService.delete(speciality);
 
-        verify(specialtyRepository).delete(any(Speciality.class));
+        //then
+        then(specialtyRepository).should().delete(any(Speciality.class));
     }
 
     @Test
     void findByIdTest() {
-        Speciality speciality = new Speciality();
-
-        when(specialtyRepository.findById(1L)).thenReturn(Optional.of(speciality));
-
-        Speciality foundSpeciality = specialitySDJpaService.findById(1L);
-
-        assertThat(foundSpeciality).isNotNull();
-        verify(specialtyRepository).findById(1L);
-    }
-
-    @Test
-    void findByIdBDDTest() {
         //given
         Speciality speciality = new Speciality();
         given(specialtyRepository.findById(1L)).willReturn(Optional.of(speciality));
@@ -56,23 +47,60 @@ class SpecialitySDJpaServiceTest {
 
         //then
         assertThat(foundSpeciality).isNotNull();
-        then(specialtyRepository).should(times(1)).findById(anyLong());
+        then(specialtyRepository).should().findById(1L);
         then(specialtyRepository).shouldHaveNoMoreInteractions();
     }
 
     @Test
     void delete() {
+        //when
         specialitySDJpaService.delete(new Speciality());
+
+        //then
+        then(specialtyRepository).should().delete(any(Speciality.class));
     }
 
     @Test
     void deleteById() {
+
+        //when
         specialitySDJpaService.deleteById(1L);
         specialitySDJpaService.deleteById(1L);
 
-        verify(specialtyRepository, times(2)).deleteById(1L);
-        verify(specialtyRepository, atLeastOnce()).deleteById(1L);
-        verify(specialtyRepository, atMost(3)).deleteById(1L);
-        verify(specialtyRepository, never()).deleteById(2L);
+        //then
+        then(specialtyRepository).should(times(2)).deleteById(1L);
+    }
+
+    @Test
+    void deleteByIdAtLeast() {
+
+        //when
+        specialitySDJpaService.deleteById(1L);
+        specialitySDJpaService.deleteById(1L);
+
+        //then
+        then(specialtyRepository).should(atLeastOnce()).deleteById(1L);
+    }
+
+    @Test
+    void deleteByIdAtMost() {
+
+        //when
+        specialitySDJpaService.deleteById(1L);
+        specialitySDJpaService.deleteById(1L);
+
+        //then
+        then(specialtyRepository).should(atMost(3)).deleteById(1L);
+    }
+
+    @Test
+    void deleteByIdNever() {
+
+        //when
+        specialitySDJpaService.deleteById(1L);
+        specialitySDJpaService.deleteById(1L);
+
+        //then
+        then(specialtyRepository).should(never()).deleteById(2L);
     }
 }
