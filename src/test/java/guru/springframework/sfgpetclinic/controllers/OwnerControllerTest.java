@@ -5,16 +5,22 @@ import guru.springframework.sfgpetclinic.model.Owner;
 import guru.springframework.sfgpetclinic.services.OwnerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.validation.Valid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +35,23 @@ class OwnerControllerTest {
 
     @InjectMocks
     OwnerController ownerController;
+
+    @Captor
+    ArgumentCaptor<String> stringCaptor;
+
+    @Test
+    void processFindFromWildcardString() {
+        //given
+        Owner owner = new Owner(1L, "Jane", "Buck");
+        List<Owner> ownerList = new ArrayList<>();
+        given(ownerService.findAllByLastNameLike(stringCaptor.capture())).willReturn(ownerList);
+
+        //when
+        String viewName = ownerController.processFindForm(owner, result, null);
+
+        //then
+        assertThat(stringCaptor.getValue()).isEqualToIgnoringCase("%Buck%");
+    }
 
     @Test
     void processCreationFormWithErrors() {
