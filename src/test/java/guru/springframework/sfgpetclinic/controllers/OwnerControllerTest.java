@@ -44,6 +44,7 @@ class OwnerControllerTest {
         //given
         Owner owner = new Owner(1L, "Jane", "Buck");
         List<Owner> ownerList = new ArrayList<>();
+//        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         given(ownerService.findAllByLastNameLike(stringCaptor.capture())).willReturn(ownerList);
 
         //when
