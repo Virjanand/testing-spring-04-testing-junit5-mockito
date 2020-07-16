@@ -7,10 +7,7 @@ import guru.springframework.sfgpetclinic.services.OwnerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.validation.Valid;
@@ -33,6 +30,9 @@ class OwnerControllerTest {
 
     @Mock
     BindingResult result;
+
+    @Mock
+    private Model model;
 
     @InjectMocks
     OwnerController ownerController;
@@ -92,13 +92,18 @@ class OwnerControllerTest {
         //given
         setUp();
         Owner owner = new Owner(1L, "Jane", "FindMe");
+        InOrder inOrder = inOrder(ownerService, model);
 
         //when
-        String viewName = ownerController.processFindForm(owner, result, mock(Model.class));
+        String viewName = ownerController.processFindForm(owner, result, model);
 
         //then
         assertThat("%FindMe%").isEqualToIgnoringCase(stringCaptor.getValue());
         assertThat("owners/ownersList").isEqualToIgnoringCase(viewName);
+
+        //inorder asserts
+        inOrder.verify(ownerService).findAllByLastNameLike(anyString());
+        inOrder.verify(model).addAttribute(anyString(), anyList());
     }
 
     @Test
