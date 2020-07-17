@@ -13,7 +13,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SpecialitySDJpaServiceTest {
@@ -47,7 +46,7 @@ class SpecialitySDJpaServiceTest {
 
         //then
         assertThat(foundSpeciality).isNotNull();
-        then(specialtyRepository).should().findById(1L);
+        then(specialtyRepository).should(timeout(100)).findById(1L);
         then(specialtyRepository).shouldHaveNoMoreInteractions();
     }
 
@@ -68,7 +67,7 @@ class SpecialitySDJpaServiceTest {
         specialitySDJpaService.deleteById(1L);
 
         //then
-        then(specialtyRepository).should(times(2)).deleteById(1L);
+        then(specialtyRepository).should(timeout(100).times(2)).deleteById(1L);
     }
 
     @Test
@@ -79,7 +78,7 @@ class SpecialitySDJpaServiceTest {
         specialitySDJpaService.deleteById(1L);
 
         //then
-        then(specialtyRepository).should(atLeastOnce()).deleteById(1L);
+        then(specialtyRepository).should(timeout(100).atLeastOnce()).deleteById(1L);
     }
 
     @Test
